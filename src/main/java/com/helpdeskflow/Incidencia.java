@@ -13,7 +13,7 @@ public class Incidencia {
     private final Impacto impacto;
     private final Prioridad prioridad;
     private final Urgencia urgencia;
-    private final EstadoIncidencia estado;
+    private EstadoIncidencia estado;
     private final LocalDateTime fechaCreacion;
 
     private LocalDateTime fechaCierre;
@@ -83,6 +83,15 @@ public class Incidencia {
         }
     }
 
+
+    private static void validarDescripcionSolucion(String descripcionSolucion) {
+        if (descripcionSolucion == null || descripcionSolucion.isBlank()) {
+            throw new IllegalArgumentException(
+                    "La descripción de solución es obligatoria."
+            );
+        }
+    }
+
     public UUID getId() {
         return id;
     }
@@ -122,7 +131,47 @@ public class Incidencia {
     public String getDescripcionSolucion() {
         return descripcionSolucion;
     }
+
     public Prioridad getPrioridad() {
-    return prioridad;
+        return prioridad;
 }
+
+    public void avanzarA(EstadoIncidencia nuevoEstado) {
+        validarNuevoEstado(nuevoEstado);
+
+        if (nuevoEstado == EstadoIncidencia.FINALIZADA) {
+            throw new IllegalStateException(
+                    "Para finalizar una incidencia debe indicar una solución."
+            );
+        }
+
+        validarTransicionConsecutiva(nuevoEstado);
+        this.estado = nuevoEstado;
+    }
+
+    public void finalizar(String descripcionSolucion) {
+        validarDescripcionSolucion(descripcionSolucion);
+        validarTransicionConsecutiva(EstadoIncidencia.FINALIZADA);
+
+        this.estado = EstadoIncidencia.FINALIZADA;
+        this.descripcionSolucion = descripcionSolucion.trim();
+        this.fechaCierre = LocalDateTime.now();
+    }
+
+    private void validarNuevoEstado(EstadoIncidencia nuevoEstado) {
+        if (nuevoEstado == null) {
+            throw new IllegalArgumentException(
+                    "El nuevo estado es obligatorio."
+            );
+        }
+    }
+
+    private void validarTransicionConsecutiva(EstadoIncidencia nuevoEstado) {
+        if (nuevoEstado.ordinal() != estado.ordinal() + 1) {
+            throw new IllegalStateException(
+                    "Transición inválida de " + estado + " a " + nuevoEstado
+                            + ". Solo se permite avanzar al estado siguiente."
+            );
+        }
+    }
 }
