@@ -1,4 +1,12 @@
-public static Prioridad calcular(Impacto impacto, Urgencia urgencia) {
+package com.helpdeskflow;
+
+public final class CalculadorPrioridad {
+
+    private CalculadorPrioridad() {
+        // Evita crear objetos de esta clase utilitaria.
+    }
+
+    public static Prioridad calcular(Impacto impacto, Urgencia urgencia) {
     validarDatos(impacto, urgencia);
 
     if (impacto == Impacto.ALTO && urgencia == Urgencia.ALTA) {
@@ -24,4 +32,5 @@ private static void validarDatos(Impacto impacto, Urgencia urgencia) {
                 "La urgencia es obligatoria para calcular la prioridad."
         );
     }
+}
 }
