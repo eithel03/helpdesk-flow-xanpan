@@ -1,6 +1,7 @@
 package com.helpdeskflow;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
@@ -61,4 +62,22 @@ class CalculadorPrioridadTest {
 
         assertEquals(Prioridad.NORMAL, resultado);
     }
+
+    @Test
+void debeRechazarImpactoNulo() {
+    assertThrows(
+            IllegalArgumentException.class,
+            () -> CalculadorPrioridad.calcular(null, Urgencia.ALTA)
+    );
+}
+
+@Test
+void debeRechazarUrgenciaNula() {
+    assertThrows(
+            IllegalArgumentException.class,
+            () -> CalculadorPrioridad.calcular(Impacto.ALTO, null)
+    );
+}
+
+
 }
