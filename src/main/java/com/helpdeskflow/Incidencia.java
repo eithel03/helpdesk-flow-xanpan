@@ -37,6 +37,10 @@ if (descripcion == null || descripcion.trim().length() < 10) {
     );
 }
 
+if (impacto == null) {
+    throw new IllegalArgumentException("El impacto es obligatorio.");
+}
+
         this.id = UUID.randomUUID();
         this.titulo = titulo;
         this.descripcion = descripcion;
