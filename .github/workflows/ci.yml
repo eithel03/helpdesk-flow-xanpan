@@ -1,0 +1,35 @@
+name: Integración continua
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Compilar y ejecutar pruebas
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Mostrar versiones
+        run: |
+          java -version
+          mvn -version
+
+      - name: Compilar el proyecto
+        run: mvn --batch-mode clean compile
+
+      - name: Ejecutar pruebas
+        run: mvn --batch-mode test
