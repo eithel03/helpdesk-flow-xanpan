@@ -104,4 +104,26 @@ void debeIniciarConEstadoRegistrada() {
 
     assertEquals(EstadoIncidencia.REGISTRADA, incidencia.getEstado());
 }
+
+@Test
+void debeAsignarFechaDeCreacionAutomaticamente() {
+    Incidencia incidencia = crearIncidenciaValida();
+
+    assertNotNull(incidencia.getFechaCreacion());
+}
+
+@Test
+void debeRechazarCategoriaVacia() {
+    assertThrows(IllegalArgumentException.class, () ->
+            new Incidencia(
+                    "Problema de conexión",
+                    "El equipo no logra conectarse a Internet.",
+                    "   ",
+                    Impacto.MEDIO,
+                    Urgencia.MEDIA
+            )
+    );
+}
+
+
 }
