@@ -1,0 +1,122 @@
+package com.helpdeskflow;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+public class Incidencia {
+
+    private final UUID id;
+    private final String titulo;
+    private final String descripcion;
+    private final String categoria;
+    private final Impacto impacto;
+    private final Urgencia urgencia;
+    private final EstadoIncidencia estado;
+    private final LocalDateTime fechaCreacion;
+
+    private LocalDateTime fechaCierre;
+    private String descripcionSolucion;
+
+    public Incidencia(
+            String titulo,
+            String descripcion,
+            String categoria,
+            Impacto impacto,
+            Urgencia urgencia) {
+
+        validarTitulo(titulo);
+        validarDescripcion(descripcion);
+        validarCategoria(categoria);
+        validarImpacto(impacto);
+        validarUrgencia(urgencia);
+
+        this.id = UUID.randomUUID();
+        this.titulo = titulo.trim();
+        this.descripcion = descripcion.trim();
+        this.categoria = categoria.trim();
+        this.impacto = impacto;
+        this.urgencia = urgencia;
+        this.estado = EstadoIncidencia.REGISTRADA;
+        this.fechaCreacion = LocalDateTime.now();
+    }
+
+    private static void validarTitulo(String titulo) {
+        if (titulo == null || titulo.isBlank()) {
+            throw new IllegalArgumentException(
+                    "El título no puede estar vacío."
+            );
+        }
+    }
+
+    private static void validarDescripcion(String descripcion) {
+        if (descripcion == null || descripcion.trim().length() < 10) {
+            throw new IllegalArgumentException(
+                    "La descripción debe contener al menos 10 caracteres."
+            );
+        }
+    }
+
+    private static void validarCategoria(String categoria) {
+        if (categoria == null || categoria.isBlank()) {
+            throw new IllegalArgumentException(
+                    "La categoría no puede estar vacía."
+            );
+        }
+    }
+
+    private static void validarImpacto(Impacto impacto) {
+        if (impacto == null) {
+            throw new IllegalArgumentException(
+                    "El impacto es obligatorio."
+            );
+        }
+    }
+
+    private static void validarUrgencia(Urgencia urgencia) {
+        if (urgencia == null) {
+            throw new IllegalArgumentException(
+                    "La urgencia es obligatoria."
+            );
+        }
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public Impacto getImpacto() {
+        return impacto;
+    }
+
+    public Urgencia getUrgencia() {
+        return urgencia;
+    }
+
+    public EstadoIncidencia getEstado() {
+        return estado;
+    }
+
+    public LocalDateTime getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public LocalDateTime getFechaCierre() {
+        return fechaCierre;
+    }
+
+    public String getDescripcionSolucion() {
+        return descripcionSolucion;
+    }
+}
