@@ -38,4 +38,17 @@ void debeRechazarTituloVacio() {
             )
     );
 }
+
+@Test
+void debeRechazarDescripcionConMenosDeDiezCaracteres() {
+    assertThrows(IllegalArgumentException.class, () ->
+            new Incidencia(
+                    "Problema de red",
+                    "Muy corta",
+                    "Redes",
+                    Impacto.MEDIO,
+                    Urgencia.MEDIA
+            )
+    );
+}
 }
