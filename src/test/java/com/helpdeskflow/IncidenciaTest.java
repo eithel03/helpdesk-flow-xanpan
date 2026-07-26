@@ -3,6 +3,7 @@ package com.helpdeskflow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.jupiter.api.Test;
 
@@ -78,4 +79,29 @@ void debeRechazarUrgenciaNula() {
     );
 }
 
+@Test
+void debeGenerarIdentificadoresUnicos() {
+    Incidencia primera = crearIncidenciaValida();
+    Incidencia segunda = crearIncidenciaValida();
+
+    assertNotEquals(primera.getId(), segunda.getId());
+}
+
+
+private Incidencia crearIncidenciaValida() {
+    return new Incidencia(
+            "Computadora no enciende",
+            "La computadora del laboratorio no enciende.",
+            "Hardware",
+            Impacto.ALTO,
+            Urgencia.ALTA
+    );
+}
+
+@Test
+void debeIniciarConEstadoRegistrada() {
+    Incidencia incidencia = crearIncidenciaValida();
+
+    assertEquals(EstadoIncidencia.REGISTRADA, incidencia.getEstado());
+}
 }
