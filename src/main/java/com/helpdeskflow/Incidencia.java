@@ -41,6 +41,10 @@ if (impacto == null) {
     throw new IllegalArgumentException("El impacto es obligatorio.");
 }
 
+if (urgencia == null) {
+    throw new IllegalArgumentException("La urgencia es obligatoria.");
+}
+
         this.id = UUID.randomUUID();
         this.titulo = titulo;
         this.descripcion = descripcion;
