@@ -64,4 +64,18 @@ void debeRechazarImpactoNulo() {
             )
     );
 }
+
+@Test
+void debeRechazarUrgenciaNula() {
+    assertThrows(IllegalArgumentException.class, () ->
+            new Incidencia(
+                    "Problema con impresora",
+                    "La impresora no reconoce el papel cargado.",
+                    "Impresoras",
+                    Impacto.BAJO,
+                    null
+            )
+    );
+}
+
 }
