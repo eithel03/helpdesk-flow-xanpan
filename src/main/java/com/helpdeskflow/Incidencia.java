@@ -3,6 +3,7 @@ package com.helpdeskflow;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+
 public class Incidencia {
 
     private final UUID id;
@@ -10,6 +11,7 @@ public class Incidencia {
     private final String descripcion;
     private final String categoria;
     private final Impacto impacto;
+    private final Prioridad prioridad;
     private final Urgencia urgencia;
     private final EstadoIncidencia estado;
     private final LocalDateTime fechaCreacion;
@@ -36,6 +38,7 @@ public class Incidencia {
         this.categoria = categoria.trim();
         this.impacto = impacto;
         this.urgencia = urgencia;
+        this.prioridad = CalculadorPrioridad.calcular(impacto, urgencia);
         this.estado = EstadoIncidencia.REGISTRADA;
         this.fechaCreacion = LocalDateTime.now();
     }
@@ -119,4 +122,7 @@ public class Incidencia {
     public String getDescripcionSolucion() {
         return descripcionSolucion;
     }
+    public Prioridad getPrioridad() {
+    return prioridad;
+}
 }

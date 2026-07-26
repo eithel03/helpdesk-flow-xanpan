@@ -125,5 +125,18 @@ void debeRechazarCategoriaVacia() {
     );
 }
 
+@Test
+void debeAsignarPrioridadAutomaticamente() {
+    Incidencia incidencia = new Incidencia(
+            "Servidor principal caído",
+            "El servidor principal no responde a las solicitudes.",
+            "Servidores",
+            Impacto.ALTO,
+            Urgencia.ALTA
+    );
+
+    assertEquals(Prioridad.CRITICA, incidencia.getPrioridad());
+}
+
 
 }
