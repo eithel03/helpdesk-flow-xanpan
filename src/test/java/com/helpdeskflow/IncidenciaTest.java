@@ -51,4 +51,17 @@ void debeRechazarDescripcionConMenosDeDiezCaracteres() {
             )
     );
 }
+
+@Test
+void debeRechazarImpactoNulo() {
+    assertThrows(IllegalArgumentException.class, () ->
+            new Incidencia(
+                    "Servidor sin conexión",
+                    "El servidor principal perdió la conexión.",
+                    "Servidores",
+                    null,
+                    Urgencia.ALTA
+            )
+    );
+}
 }
