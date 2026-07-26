@@ -2,6 +2,7 @@ package com.helpdeskflow;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
@@ -25,4 +26,16 @@ class IncidenciaTest {
         assertEquals(Impacto.ALTO, incidencia.getImpacto());
         assertEquals(Urgencia.ALTA, incidencia.getUrgencia());
     }
+    @Test
+void debeRechazarTituloVacio() {
+    assertThrows(IllegalArgumentException.class, () ->
+            new Incidencia(
+                    "   ",
+                    "La computadora no logra encender correctamente.",
+                    "Hardware",
+                    Impacto.ALTO,
+                    Urgencia.ALTA
+            )
+    );
+}
 }
