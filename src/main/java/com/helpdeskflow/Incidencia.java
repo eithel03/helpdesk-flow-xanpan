@@ -5,6 +5,8 @@ import java.util.UUID;
 
 public class Incidencia {
 
+    
+
     private final UUID id;
     private final String titulo;
     private final String descripcion;
@@ -18,11 +20,17 @@ public class Incidencia {
     private String descripcionSolucion;
 
     public Incidencia(
+
+        
             String titulo,
             String descripcion,
             String categoria,
             Impacto impacto,
             Urgencia urgencia) {
+
+                if (titulo == null || titulo.isBlank()) {
+    throw new IllegalArgumentException("El título no puede estar vacío.");
+}
 
         this.id = UUID.randomUUID();
         this.titulo = titulo;
@@ -32,7 +40,11 @@ public class Incidencia {
         this.urgencia = urgencia;
         this.estado = EstadoIncidencia.REGISTRADA;
         this.fechaCreacion = LocalDateTime.now();
+
+        
     }
+
+    
 
     public UUID getId() {
         return id;
@@ -73,4 +85,5 @@ public class Incidencia {
     public String getDescripcionSolucion() {
         return descripcionSolucion;
     }
+    
 }
