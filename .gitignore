@@ -24,3 +24,10 @@ hs_err_pid*
 replay_pid*
 
 target/
+
+
+# Bases de datos locales SQLite
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
