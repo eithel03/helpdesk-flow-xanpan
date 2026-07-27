@@ -12,6 +12,10 @@ public interface RepositorioIncidencias {
 
     List<Incidencia> listarTodas();
 
+    List<Incidencia> listarAbiertas();
+
+    List<Incidencia> listarFinalizadas();
+
     List<Incidencia> filtrarPorEstado(EstadoIncidencia estado);
 
     List<Incidencia> filtrarPorPrioridad(Prioridad prioridad);

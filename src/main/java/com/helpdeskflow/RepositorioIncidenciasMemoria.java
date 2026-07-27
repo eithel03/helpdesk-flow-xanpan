@@ -37,6 +37,21 @@ public class RepositorioIncidenciasMemoria implements RepositorioIncidencias {
     }
 
     @Override
+    public List<Incidencia> listarAbiertas() {
+        return incidencias.values().stream()
+                .filter(incidencia -> incidencia.getEstado()
+                        != EstadoIncidencia.FINALIZADA)
+                .toList();
+    }
+
+    @Override
+    public List<Incidencia> listarFinalizadas() {
+        return incidencias.values().stream()
+                .filter(incidencia -> incidencia.getEstado()
+                        == EstadoIncidencia.FINALIZADA)
+                .toList();
+    }
+    @Override
     public List<Incidencia> filtrarPorEstado(EstadoIncidencia estado) {
         validarEstado(estado);
 
