@@ -95,6 +95,9 @@ public class Incidencia {
                 fechaCreacion,
                 fechaCierre,
                 descripcionSolucion);
+        validarExpediteReconstruido(
+                prioridad,
+                expedite);
 
         this.id = id;
         this.titulo = titulo.trim();
@@ -199,7 +202,7 @@ public class Incidencia {
             EstadoIncidencia estado,
             LocalDateTime fechaCreacion,
             LocalDateTime fechaCierre,
-            String descripcionSolucion) {                
+            String descripcionSolucion) {
 
         Prioridad prioridadEsperada = CalculadorPrioridad.calcular(impacto, urgencia);
 
@@ -235,7 +238,6 @@ public class Incidencia {
                     "Una incidencia EXPEDITE debe tener prioridad CRITICA.");
         }
     }
-    
 
     public UUID getId() {
         return id;

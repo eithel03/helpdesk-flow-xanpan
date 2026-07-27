@@ -17,8 +17,21 @@ public class RepositorioIncidenciasMemoria implements RepositorioIncidencias {
         UUID id = incidencia.getId();
         if (incidencias.containsKey(id)) {
             throw new IllegalArgumentException(
-                    "Ya existe una incidencia con el identificador indicado."
-            );
+                    "Ya existe una incidencia con el identificador indicado.");
+        }
+
+        incidencias.put(id, incidencia);
+    }
+
+    @Override
+    public void actualizar(Incidencia incidencia) {
+        validarIncidencia(incidencia);
+
+        UUID id = incidencia.getId();
+
+        if (!incidencias.containsKey(id)) {
+            throw new IllegalArgumentException(
+                    "No existe una incidencia con el identificador indicado.");
         }
 
         incidencias.put(id, incidencia);
@@ -39,18 +52,17 @@ public class RepositorioIncidenciasMemoria implements RepositorioIncidencias {
     @Override
     public List<Incidencia> listarAbiertas() {
         return incidencias.values().stream()
-                .filter(incidencia -> incidencia.getEstado()
-                        != EstadoIncidencia.FINALIZADA)
+                .filter(incidencia -> incidencia.getEstado() != EstadoIncidencia.FINALIZADA)
                 .toList();
     }
 
     @Override
     public List<Incidencia> listarFinalizadas() {
         return incidencias.values().stream()
-                .filter(incidencia -> incidencia.getEstado()
-                        == EstadoIncidencia.FINALIZADA)
+                .filter(incidencia -> incidencia.getEstado() == EstadoIncidencia.FINALIZADA)
                 .toList();
     }
+
     @Override
     public List<Incidencia> filtrarPorEstado(EstadoIncidencia estado) {
         validarEstado(estado);
@@ -72,32 +84,28 @@ public class RepositorioIncidenciasMemoria implements RepositorioIncidencias {
     private static void validarIncidencia(Incidencia incidencia) {
         if (incidencia == null) {
             throw new IllegalArgumentException(
-                    "La incidencia es obligatoria."
-            );
+                    "La incidencia es obligatoria.");
         }
     }
 
     private static void validarId(UUID id) {
         if (id == null) {
             throw new IllegalArgumentException(
-                    "El identificador es obligatorio."
-            );
+                    "El identificador es obligatorio.");
         }
     }
 
     private static void validarEstado(EstadoIncidencia estado) {
         if (estado == null) {
             throw new IllegalArgumentException(
-                    "El estado es obligatorio."
-            );
+                    "El estado es obligatorio.");
         }
     }
 
     private static void validarPrioridad(Prioridad prioridad) {
         if (prioridad == null) {
             throw new IllegalArgumentException(
-                    "La prioridad es obligatoria."
-            );
+                    "La prioridad es obligatoria.");
         }
     }
 }

@@ -13,8 +13,7 @@ import org.junit.jupiter.api.Test;
 
 class RepositorioIncidenciasMemoriaTest {
 
-    private final RepositorioIncidencias repositorio =
-            new RepositorioIncidenciasMemoria();
+    private final RepositorioIncidencias repositorio = new RepositorioIncidenciasMemoria();
 
     @Test
     void debeGuardarUnaIncidencia() {
@@ -61,8 +60,7 @@ class RepositorioIncidenciasMemoriaTest {
         Incidencia incidencia = crearIncidenciaNormal();
         repositorio.guardar(incidencia);
 
-        Optional<Incidencia> resultado =
-                repositorio.buscarPorId(incidencia.getId());
+        Optional<Incidencia> resultado = repositorio.buscarPorId(incidencia.getId());
 
         assertTrue(resultado.isPresent());
         assertSame(incidencia, resultado.get());
@@ -70,8 +68,7 @@ class RepositorioIncidenciasMemoriaTest {
 
     @Test
     void debeDevolverOptionalVacioCuandoElIdentificadorNoExiste() {
-        Optional<Incidencia> resultado =
-                repositorio.buscarPorId(UUID.randomUUID());
+        Optional<Incidencia> resultado = repositorio.buscarPorId(UUID.randomUUID());
 
         assertTrue(resultado.isEmpty());
     }
@@ -96,8 +93,7 @@ class RepositorioIncidenciasMemoriaTest {
         repositorio.guardar(registrada);
         repositorio.guardar(lista);
 
-        List<Incidencia> resultado =
-                repositorio.filtrarPorEstado(EstadoIncidencia.LISTA);
+        List<Incidencia> resultado = repositorio.filtrarPorEstado(EstadoIncidencia.LISTA);
 
         assertEquals(List.of(lista), resultado);
     }
@@ -106,8 +102,7 @@ class RepositorioIncidenciasMemoriaTest {
     void debeFiltrarPorEstadoSinCoincidencias() {
         repositorio.guardar(crearIncidenciaNormal());
 
-        List<Incidencia> resultado =
-                repositorio.filtrarPorEstado(EstadoIncidencia.FINALIZADA);
+        List<Incidencia> resultado = repositorio.filtrarPorEstado(EstadoIncidencia.FINALIZADA);
 
         assertTrue(resultado.isEmpty());
     }
@@ -119,8 +114,7 @@ class RepositorioIncidenciasMemoriaTest {
         repositorio.guardar(normal);
         repositorio.guardar(critica);
 
-        List<Incidencia> resultado =
-                repositorio.filtrarPorPrioridad(Prioridad.CRITICA);
+        List<Incidencia> resultado = repositorio.filtrarPorPrioridad(Prioridad.CRITICA);
 
         assertEquals(List.of(critica), resultado);
     }
@@ -129,8 +123,7 @@ class RepositorioIncidenciasMemoriaTest {
     void debeFiltrarPorPrioridadSinCoincidencias() {
         repositorio.guardar(crearIncidenciaNormal());
 
-        List<Incidencia> resultado =
-                repositorio.filtrarPorPrioridad(Prioridad.CRITICA);
+        List<Incidencia> resultado = repositorio.filtrarPorPrioridad(Prioridad.CRITICA);
 
         assertTrue(resultado.isEmpty());
     }
@@ -146,6 +139,7 @@ class RepositorioIncidenciasMemoriaTest {
 
         assertEquals(List.of(registrada), resultado);
     }
+
     @Test
     void listarAbiertasDebeDevolverIncidenciasListas() {
         Incidencia lista = crearIncidenciaLista();
@@ -157,6 +151,7 @@ class RepositorioIncidenciasMemoriaTest {
 
         assertEquals(List.of(lista), resultado);
     }
+
     @Test
     void listarAbiertasDebeDevolverIncidenciasEnDesarrollo() {
         Incidencia enDesarrollo = crearIncidenciaEnDesarrollo();
@@ -168,6 +163,7 @@ class RepositorioIncidenciasMemoriaTest {
 
         assertEquals(List.of(enDesarrollo), resultado);
     }
+
     @Test
     void listarAbiertasDebeDevolverIncidenciasEnValidacion() {
         Incidencia enValidacion = crearIncidenciaEnValidacion();
@@ -179,6 +175,7 @@ class RepositorioIncidenciasMemoriaTest {
 
         assertEquals(List.of(enValidacion), resultado);
     }
+
     @Test
     void listarAbiertasDebeExcluirIncidenciasFinalizadas() {
         Incidencia registrada = crearIncidenciaNormal();
@@ -190,6 +187,7 @@ class RepositorioIncidenciasMemoriaTest {
 
         assertEquals(List.of(registrada), resultado);
     }
+
     @Test
     void listarAbiertasDebeDevolverListaVaciaCuandoTodasEstanFinalizadas() {
         repositorio.guardar(crearIncidenciaFinalizada());
@@ -199,6 +197,7 @@ class RepositorioIncidenciasMemoriaTest {
 
         assertTrue(resultado.isEmpty());
     }
+
     @Test
     void listarFinalizadasDebeDevolverSolamenteIncidenciasFinalizadas() {
         Incidencia registrada = crearIncidenciaNormal();
@@ -210,6 +209,7 @@ class RepositorioIncidenciasMemoriaTest {
 
         assertEquals(List.of(finalizada), resultado);
     }
+
     @Test
     void listarFinalizadasDebeDevolverListaVaciaCuandoNoHayFinalizadas() {
         repositorio.guardar(crearIncidenciaNormal());
@@ -219,6 +219,7 @@ class RepositorioIncidenciasMemoriaTest {
 
         assertTrue(resultado.isEmpty());
     }
+
     @Test
     void listarAbiertasYFinalizadasDebenConservarOrdenDeInsercion() {
         Incidencia registrada = crearIncidenciaNormal();
@@ -237,6 +238,7 @@ class RepositorioIncidenciasMemoriaTest {
         assertEquals(List.of(finalizadaPrimera, finalizadaSegunda),
                 repositorio.listarFinalizadas());
     }
+
     @Test
     void listasDeAbiertasYFinalizadasNoDebenModificarElRepositorio() {
         Incidencia abierta = crearIncidenciaNormal();
@@ -252,6 +254,7 @@ class RepositorioIncidenciasMemoriaTest {
         assertEquals(List.of(abierta), repositorio.listarAbiertas());
         assertEquals(List.of(finalizada), repositorio.listarFinalizadas());
     }
+
     @Test
     void debeRechazarEstadoNulo() {
         assertThrows(IllegalArgumentException.class,
@@ -289,14 +292,54 @@ class RepositorioIncidenciasMemoriaTest {
                 repositorio.buscarPorId(incidencia.getId()));
     }
 
+    @Test
+    void debeActualizarUnaIncidenciaExistente() {
+        RepositorioIncidencias repositorio = new RepositorioIncidenciasMemoria();
+
+        Incidencia incidencia = new Incidencia(
+                "Problema de conexión",
+                "La conexión presenta interrupciones frecuentes.",
+                "Redes",
+                Impacto.MEDIO,
+                Urgencia.MEDIA);
+
+        repositorio.guardar(incidencia);
+
+        incidencia.avanzarA(EstadoIncidencia.LISTA);
+        repositorio.actualizar(incidencia);
+
+        Incidencia recuperada = repositorio
+                .buscarPorId(incidencia.getId())
+                .orElseThrow();
+
+        assertEquals(
+                EstadoIncidencia.LISTA,
+                recuperada.getEstado());
+    }
+
+    @Test
+    void debeRechazarActualizacionDeIncidenciaInexistente() {
+        RepositorioIncidencias repositorio = new RepositorioIncidenciasMemoria();
+
+        Incidencia incidencia = new Incidencia(
+                "Problema de conexión",
+                "La conexión presenta interrupciones frecuentes.",
+                "Redes",
+                Impacto.MEDIO,
+                Urgencia.MEDIA);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> repositorio.actualizar(incidencia));
+    }
+
     private Incidencia crearIncidenciaNormal() {
         return new Incidencia(
                 "Problema de monitor",
                 "El monitor principal no muestra imagen.",
                 "Hardware",
                 Impacto.BAJO,
-                Urgencia.BAJA
-        );
+                Urgencia.BAJA);
     }
 
     private Incidencia crearIncidenciaAlta() {
@@ -305,8 +348,7 @@ class RepositorioIncidenciasMemoriaTest {
                 "El equipo no logra conectarse a Internet.",
                 "Redes",
                 Impacto.ALTO,
-                Urgencia.MEDIA
-        );
+                Urgencia.MEDIA);
     }
 
     private Incidencia crearIncidenciaCritica() {
@@ -315,9 +357,9 @@ class RepositorioIncidenciasMemoriaTest {
                 "El servidor principal no responde solicitudes.",
                 "Servidores",
                 Impacto.ALTO,
-                Urgencia.ALTA
-        );
+                Urgencia.ALTA);
     }
+
     private Incidencia crearIncidenciaLista() {
         Incidencia incidencia = crearIncidenciaAlta();
         incidencia.avanzarA(EstadoIncidencia.LISTA);

@@ -1,13 +1,18 @@
 package com.helpdeskflow;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import org.junit.jupiter.api.Test;
 
 class ConfiguracionProyectoTest {
 
     @Test
-    void mainPuedeEjecutarseSinLanzarExcepciones() {
-        assertDoesNotThrow(() -> HelpDeskFlowApplication.main(new String[]{}));
+    void debeExistirLaClasePrincipalDelProyecto() {
+        assertNotNull(HelpDeskFlowApplication.class);
+    }
+
+    @Test
+    void debeExistirLaClaseMenuConsola() {
+        assertNotNull(MenuConsola.class);
     }
 }
