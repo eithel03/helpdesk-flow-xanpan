@@ -5,6 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 import org.junit.jupiter.api.Test;
 
 class IncidenciaTest {
@@ -112,6 +117,39 @@ void debeAsignarFechaDeCreacionAutomaticamente() {
     assertNotNull(incidencia.getFechaCreacion());
 }
 
+
+@Test
+void debePermitirFechaDeCreacionDeterministaConClock() {
+    Clock reloj = Clock.fixed(
+            Instant.parse("2026-01-01T08:00:00Z"),
+            ZoneId.of("UTC")
+    );
+
+    Incidencia incidencia = new Incidencia(
+            "Computadora no enciende",
+            "La computadora del laboratorio no enciende.",
+            "Hardware",
+            Impacto.ALTO,
+            Urgencia.ALTA,
+            reloj
+    );
+
+    assertEquals(LocalDateTime.parse("2026-01-01T08:00:00"),
+            incidencia.getFechaCreacion());
+}
+
+@Test
+void constructorExistenteDebeConservarFechaDeCreacionAutomatica() {
+    Incidencia incidencia = new Incidencia(
+            "Computadora no enciende",
+            "La computadora del laboratorio no enciende.",
+            "Hardware",
+            Impacto.ALTO,
+            Urgencia.ALTA
+    );
+
+    assertNotNull(incidencia.getFechaCreacion());
+}
 @Test
 void debeRechazarCategoriaVacia() {
     assertThrows(IllegalArgumentException.class, () ->
