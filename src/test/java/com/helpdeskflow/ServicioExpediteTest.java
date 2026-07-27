@@ -24,8 +24,7 @@ class ServicioExpediteTest {
 
         assertThrows(
                 IllegalStateException.class,
-                incidencia::marcarComoExpedite
-        );
+                incidencia::marcarComoExpedite);
 
         assertFalse(incidencia.esExpedite());
     }
@@ -36,73 +35,203 @@ class ServicioExpediteTest {
 
         assertThrows(
                 IllegalStateException.class,
-                incidencia::marcarComoExpedite
-        );
+                incidencia::marcarComoExpedite);
 
         assertFalse(incidencia.esExpedite());
     }
 
     @Test
-void debePermitirQueUnaExpediteEntreEnDesarrollo() {
-    RepositorioIncidencias repositorio =
-            new RepositorioIncidenciasMemoria();
+    void debePermitirQueUnaExpediteEntreEnDesarrollo() {
+        RepositorioIncidencias repositorio = new RepositorioIncidenciasMemoria();
 
-    ServicioExpedite servicio =
-            new ServicioExpedite(repositorio);
+        ServicioExpedite servicio = new ServicioExpedite(repositorio);
 
-    Incidencia incidencia = crearIncidenciaCritica();
-    incidencia.marcarComoExpedite();
-    incidencia.avanzarA(EstadoIncidencia.LISTA);
+        Incidencia incidencia = crearIncidenciaCritica();
+        incidencia.marcarComoExpedite();
+        incidencia.avanzarA(EstadoIncidencia.LISTA);
 
-    repositorio.guardar(incidencia);
+        repositorio.guardar(incidencia);
 
-    servicio.avanzarA(
-            incidencia,
-            EstadoIncidencia.EN_DESARROLLO
-    );
+        servicio.avanzarA(
+                incidencia,
+                EstadoIncidencia.EN_DESARROLLO);
 
-    assertEquals(
-            EstadoIncidencia.EN_DESARROLLO,
-            incidencia.getEstado()
-    );
-}
+        assertEquals(
+                EstadoIncidencia.EN_DESARROLLO,
+                incidencia.getEstado());
+    }
 
-@Test
-void debeRechazarSegundaExpediteActivaEnDesarrollo() {
-    RepositorioIncidencias repositorio =
-            new RepositorioIncidenciasMemoria();
+    @Test
+    void debeRechazarSegundaExpediteActivaEnDesarrollo() {
+        RepositorioIncidencias repositorio = new RepositorioIncidenciasMemoria();
 
-    ServicioExpedite servicio =
-            new ServicioExpedite(repositorio);
+        ServicioExpedite servicio = new ServicioExpedite(repositorio);
 
-    Incidencia primera = crearIncidenciaCritica();
-    primera.marcarComoExpedite();
-    primera.avanzarA(EstadoIncidencia.LISTA);
-    repositorio.guardar(primera);
+        Incidencia primera = crearIncidenciaCritica();
+        primera.marcarComoExpedite();
+        primera.avanzarA(EstadoIncidencia.LISTA);
+        repositorio.guardar(primera);
 
-    servicio.avanzarA(
-            primera,
-            EstadoIncidencia.EN_DESARROLLO
-    );
+        servicio.avanzarA(
+                primera,
+                EstadoIncidencia.EN_DESARROLLO);
 
-    Incidencia segunda = crearIncidenciaCritica();
-    segunda.marcarComoExpedite();
-    segunda.avanzarA(EstadoIncidencia.LISTA);
-    repositorio.guardar(segunda);
+        Incidencia segunda = crearIncidenciaCritica();
+        segunda.marcarComoExpedite();
+        segunda.avanzarA(EstadoIncidencia.LISTA);
+        repositorio.guardar(segunda);
 
-    assertThrows(
-            IllegalStateException.class,
-            () -> servicio.avanzarA(
-                    segunda,
-                    EstadoIncidencia.EN_DESARROLLO
-            )
-    );
+        assertThrows(
+                IllegalStateException.class,
+                () -> servicio.avanzarA(
+                        segunda,
+                        EstadoIncidencia.EN_DESARROLLO));
 
-    assertEquals(
-            EstadoIncidencia.LISTA,
-            segunda.getEstado()
-    );
-}
+        assertEquals(
+                EstadoIncidencia.LISTA,
+                segunda.getEstado());
+    }
+
+    @Test
+    void expediteActivaDebePoderAvanzarAValidacion() {
+        RepositorioIncidencias repositorio = new RepositorioIncidenciasMemoria();
+
+        ServicioExpedite servicio = new ServicioExpedite(repositorio);
+
+        Incidencia incidencia = crearIncidenciaCritica();
+        incidencia.marcarComoExpedite();
+        incidencia.avanzarA(EstadoIncidencia.LISTA);
+
+        repositorio.guardar(incidencia);
+
+        servicio.avanzarA(
+                incidencia,
+                EstadoIncidencia.EN_DESARROLLO);
+
+        servicio.avanzarA(
+                incidencia,
+                EstadoIncidencia.EN_VALIDACION);
+
+        assertEquals(
+                EstadoIncidencia.EN_VALIDACION,
+                incidencia.getEstado());
+    }
+
+    @Test
+    void debeRechazarOtraExpediteCuandoExisteUnaEnValidacion() {
+        RepositorioIncidencias repositorio = new RepositorioIncidenciasMemoria();
+
+        ServicioExpedite servicio = new ServicioExpedite(repositorio);
+
+        Incidencia primera = crearIncidenciaCritica();
+        primera.marcarComoExpedite();
+        primera.avanzarA(EstadoIncidencia.LISTA);
+        repositorio.guardar(primera);
+
+        servicio.avanzarA(
+                primera,
+                EstadoIncidencia.EN_DESARROLLO);
+
+        servicio.avanzarA(
+                primera,
+                EstadoIncidencia.EN_VALIDACION);
+
+        Incidencia segunda = crearIncidenciaCritica();
+        segunda.marcarComoExpedite();
+        segunda.avanzarA(EstadoIncidencia.LISTA);
+        repositorio.guardar(segunda);
+
+        assertThrows(
+                IllegalStateException.class,
+                () -> servicio.avanzarA(
+                        segunda,
+                        EstadoIncidencia.EN_DESARROLLO));
+    }
+
+    @Test
+    void incidenciasNormalesDebenConservarSuFlujo() {
+        RepositorioIncidencias repositorio = new RepositorioIncidenciasMemoria();
+
+        ServicioExpedite servicio = new ServicioExpedite(repositorio);
+
+        Incidencia primeraExpedite = crearIncidenciaCritica();
+        primeraExpedite.marcarComoExpedite();
+        primeraExpedite.avanzarA(EstadoIncidencia.LISTA);
+        repositorio.guardar(primeraExpedite);
+
+        servicio.avanzarA(
+                primeraExpedite,
+                EstadoIncidencia.EN_DESARROLLO);
+
+        Incidencia incidenciaNormal = crearIncidenciaNormal();
+        incidenciaNormal.avanzarA(EstadoIncidencia.LISTA);
+        repositorio.guardar(incidenciaNormal);
+
+        servicio.avanzarA(
+                incidenciaNormal,
+                EstadoIncidencia.EN_DESARROLLO);
+
+        assertEquals(
+                EstadoIncidencia.EN_DESARROLLO,
+                incidenciaNormal.getEstado());
+    }
+
+    @Test
+    void otraExpediteDebePoderAvanzarCuandoLaPrimeraFinaliza() {
+        RepositorioIncidencias repositorio = new RepositorioIncidenciasMemoria();
+
+        ServicioExpedite servicio = new ServicioExpedite(repositorio);
+
+        Incidencia primera = crearIncidenciaCritica();
+        primera.marcarComoExpedite();
+        primera.avanzarA(EstadoIncidencia.LISTA);
+        repositorio.guardar(primera);
+
+        servicio.avanzarA(
+                primera,
+                EstadoIncidencia.EN_DESARROLLO);
+
+        servicio.avanzarA(
+                primera,
+                EstadoIncidencia.EN_VALIDACION);
+
+        primera.finalizar(
+                "Se restauró el servicio del servidor principal.");
+
+        Incidencia segunda = crearIncidenciaCritica();
+        segunda.marcarComoExpedite();
+        segunda.avanzarA(EstadoIncidencia.LISTA);
+        repositorio.guardar(segunda);
+
+        servicio.avanzarA(
+                segunda,
+                EstadoIncidencia.EN_DESARROLLO);
+
+        assertEquals(
+                EstadoIncidencia.EN_DESARROLLO,
+                segunda.getEstado());
+    }
+
+    @Test
+    void servicioExpediteNoDebePermitirSaltosDeEstado() {
+        RepositorioIncidencias repositorio = new RepositorioIncidenciasMemoria();
+
+        ServicioExpedite servicio = new ServicioExpedite(repositorio);
+
+        Incidencia incidencia = crearIncidenciaCritica();
+        incidencia.marcarComoExpedite();
+        repositorio.guardar(incidencia);
+
+        assertThrows(
+                IllegalStateException.class,
+                () -> servicio.avanzarA(
+                        incidencia,
+                        EstadoIncidencia.EN_DESARROLLO));
+
+        assertEquals(
+                EstadoIncidencia.REGISTRADA,
+                incidencia.getEstado());
+    }
 
     private Incidencia crearIncidenciaCritica() {
         return new Incidencia(
@@ -110,8 +239,7 @@ void debeRechazarSegundaExpediteActivaEnDesarrollo() {
                 "El servidor principal no responde solicitudes.",
                 "Servidores",
                 Impacto.ALTO,
-                Urgencia.ALTA
-        );
+                Urgencia.ALTA);
     }
 
     private Incidencia crearIncidenciaAlta() {
@@ -120,8 +248,7 @@ void debeRechazarSegundaExpediteActivaEnDesarrollo() {
                 "El equipo no logra conectarse correctamente.",
                 "Redes",
                 Impacto.ALTO,
-                Urgencia.MEDIA
-        );
+                Urgencia.MEDIA);
     }
 
     private Incidencia crearIncidenciaNormal() {
@@ -130,7 +257,6 @@ void debeRechazarSegundaExpediteActivaEnDesarrollo() {
                 "El monitor secundario presenta una falla.",
                 "Hardware",
                 Impacto.BAJO,
-                Urgencia.BAJA
-        );
+                Urgencia.BAJA);
     }
 }
