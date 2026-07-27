@@ -20,6 +20,7 @@ public class Incidencia {
 
     private LocalDateTime fechaCierre;
     private String descripcionSolucion;
+    private boolean expedite;
 
     public Incidencia(
         String titulo,
@@ -285,6 +286,20 @@ private static void validarDatosReconstruidos(
 
     public Prioridad getPrioridad() {
         return prioridad;
+    }
+
+    public boolean esExpedite() {
+    return expedite;
+    }
+
+    public void marcarComoExpedite() {
+        if (prioridad != Prioridad.CRITICA) {
+        throw new IllegalStateException(
+                "Solo una incidencia crítica puede marcarse como EXPEDITE."
+        );
+    }
+
+        this.expedite = true;
     }
 
     public void avanzarA(EstadoIncidencia nuevoEstado) {
