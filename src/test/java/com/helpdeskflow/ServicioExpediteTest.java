@@ -1,5 +1,6 @@
 package com.helpdeskflow;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -40,6 +41,68 @@ class ServicioExpediteTest {
 
         assertFalse(incidencia.esExpedite());
     }
+
+    @Test
+void debePermitirQueUnaExpediteEntreEnDesarrollo() {
+    RepositorioIncidencias repositorio =
+            new RepositorioIncidenciasMemoria();
+
+    ServicioExpedite servicio =
+            new ServicioExpedite(repositorio);
+
+    Incidencia incidencia = crearIncidenciaCritica();
+    incidencia.marcarComoExpedite();
+    incidencia.avanzarA(EstadoIncidencia.LISTA);
+
+    repositorio.guardar(incidencia);
+
+    servicio.avanzarA(
+            incidencia,
+            EstadoIncidencia.EN_DESARROLLO
+    );
+
+    assertEquals(
+            EstadoIncidencia.EN_DESARROLLO,
+            incidencia.getEstado()
+    );
+}
+
+@Test
+void debeRechazarSegundaExpediteActivaEnDesarrollo() {
+    RepositorioIncidencias repositorio =
+            new RepositorioIncidenciasMemoria();
+
+    ServicioExpedite servicio =
+            new ServicioExpedite(repositorio);
+
+    Incidencia primera = crearIncidenciaCritica();
+    primera.marcarComoExpedite();
+    primera.avanzarA(EstadoIncidencia.LISTA);
+    repositorio.guardar(primera);
+
+    servicio.avanzarA(
+            primera,
+            EstadoIncidencia.EN_DESARROLLO
+    );
+
+    Incidencia segunda = crearIncidenciaCritica();
+    segunda.marcarComoExpedite();
+    segunda.avanzarA(EstadoIncidencia.LISTA);
+    repositorio.guardar(segunda);
+
+    assertThrows(
+            IllegalStateException.class,
+            () -> servicio.avanzarA(
+                    segunda,
+                    EstadoIncidencia.EN_DESARROLLO
+            )
+    );
+
+    assertEquals(
+            EstadoIncidencia.LISTA,
+            segunda.getEstado()
+    );
+}
 
     private Incidencia crearIncidenciaCritica() {
         return new Incidencia(
