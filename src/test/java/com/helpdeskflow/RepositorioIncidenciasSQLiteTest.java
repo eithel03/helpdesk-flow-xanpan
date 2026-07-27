@@ -372,6 +372,59 @@ class RepositorioIncidenciasSQLiteTest {
                 assertFalse(recuperada.esExpedite());
         }
 
+        @Test
+        void debeActualizarElEstadoDeUnaIncidencia() {
+                Path archivo = directorioTemporal.resolve(
+                                "actualizar-estado.db");
+
+                RepositorioIncidencias repositorio = new RepositorioIncidenciasSQLite(archivo);
+
+                Incidencia incidencia = new Incidencia(
+                                "Problema de conexión",
+                                "La conexión presenta interrupciones frecuentes.",
+                                "Redes",
+                                Impacto.MEDIO,
+                                Urgencia.MEDIA);
+
+                repositorio.guardar(incidencia);
+
+                incidencia.avanzarA(
+                                EstadoIncidencia.LISTA);
+
+                repositorio.actualizar(incidencia);
+
+                Incidencia recuperada = repositorio
+                                .buscarPorId(incidencia.getId())
+                                .orElseThrow();
+
+                assertEquals(
+                                EstadoIncidencia.LISTA,
+                                recuperada.getEstado());
+        }
+
+        @Test
+void actualizarDebeRechazarIncidenciaInexistente() {
+    Path archivo = directorioTemporal.resolve(
+            "actualizar-inexistente.db"
+    );
+
+    RepositorioIncidencias repositorio =
+            new RepositorioIncidenciasSQLite(archivo);
+
+    Incidencia incidencia = crearIncidenciaNormal();
+
+    IllegalArgumentException excepcion =
+            assertThrows(
+                    IllegalArgumentException.class,
+                    () -> repositorio.actualizar(incidencia)
+            );
+
+    assertEquals(
+            "No existe una incidencia con el identificador indicado.",
+            excepcion.getMessage()
+    );
+}
+
         private Incidencia crearIncidenciaNormal() {
                 return new Incidencia(
                                 "Problema de monitor",

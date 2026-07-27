@@ -32,6 +32,22 @@ public class RepositorioIncidenciasSQLite
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """;
 
+    private static final String ACTUALIZAR = """
+            UPDATE incidencias
+            SET titulo = ?,
+                descripcion = ?,
+                categoria = ?,
+                impacto = ?,
+                urgencia = ?,
+                prioridad = ?,
+                estado = ?,
+                fecha_creacion = ?,
+                fecha_cierre = ?,
+                descripcion_solucion = ?,
+                expedite = ?
+            WHERE id = ?
+            """;
+
     private static final String BUSCAR_POR_ID = """
             SELECT *
             FROM incidencias
@@ -215,6 +231,62 @@ public class RepositorioIncidenciasSQLite
         return ejecutarConsultaConParametro(
                 FILTRAR_POR_PRIORIDAD,
                 prioridad.name());
+    }
+
+    @Override
+    public void actualizar(Incidencia incidencia) {
+        validarIncidencia(incidencia);
+
+        try (Connection conexion = conexionSQLite.abrir();
+                PreparedStatement sentencia = conexion.prepareStatement(ACTUALIZAR)) {
+
+            sentencia.setString(1, incidencia.getTitulo());
+            sentencia.setString(2, incidencia.getDescripcion());
+            sentencia.setString(3, incidencia.getCategoria());
+            sentencia.setString(4, incidencia.getImpacto().name());
+            sentencia.setString(5, incidencia.getUrgencia().name());
+            sentencia.setString(6, incidencia.getPrioridad().name());
+            sentencia.setString(7, incidencia.getEstado().name());
+            sentencia.setString(
+                    8,
+                    incidencia.getFechaCreacion().toString());
+
+            if (incidencia.getFechaCierre() == null) {
+                sentencia.setNull(9, java.sql.Types.VARCHAR);
+            } else {
+                sentencia.setString(
+                        9,
+                        incidencia.getFechaCierre().toString());
+            }
+
+            if (incidencia.getDescripcionSolucion() == null) {
+                sentencia.setNull(10, java.sql.Types.VARCHAR);
+            } else {
+                sentencia.setString(
+                        10,
+                        incidencia.getDescripcionSolucion());
+            }
+
+            sentencia.setInt(
+                    11,
+                    incidencia.esExpedite() ? 1 : 0);
+
+            sentencia.setString(
+                    12,
+                    incidencia.getId().toString());
+
+            int filasActualizadas = sentencia.executeUpdate();
+
+            if (filasActualizadas == 0) {
+                throw new IllegalArgumentException(
+                        "No existe una incidencia con el identificador indicado.");
+            }
+
+        } catch (SQLException excepcion) {
+            throw new ExcepcionPersistencia(
+                    "No fue posible actualizar la incidencia.",
+                    excepcion);
+        }
     }
 
     private List<Incidencia> ejecutarConsultaLista(String sql) {

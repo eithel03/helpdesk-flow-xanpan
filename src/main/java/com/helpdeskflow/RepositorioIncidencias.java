@@ -8,6 +8,8 @@ public interface RepositorioIncidencias {
 
     void guardar(Incidencia incidencia);
 
+    void actualizar(Incidencia incidencia);
+
     Optional<Incidencia> buscarPorId(UUID id);
 
     List<Incidencia> listarTodas();
