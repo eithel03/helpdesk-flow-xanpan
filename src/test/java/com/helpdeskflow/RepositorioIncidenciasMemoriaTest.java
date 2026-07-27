@@ -136,6 +136,123 @@ class RepositorioIncidenciasMemoriaTest {
     }
 
     @Test
+    void listarAbiertasDebeDevolverIncidenciasRegistradas() {
+        Incidencia registrada = crearIncidenciaNormal();
+        Incidencia finalizada = crearIncidenciaFinalizada();
+        repositorio.guardar(registrada);
+        repositorio.guardar(finalizada);
+
+        List<Incidencia> resultado = repositorio.listarAbiertas();
+
+        assertEquals(List.of(registrada), resultado);
+    }
+    @Test
+    void listarAbiertasDebeDevolverIncidenciasListas() {
+        Incidencia lista = crearIncidenciaLista();
+        Incidencia finalizada = crearIncidenciaFinalizada();
+        repositorio.guardar(lista);
+        repositorio.guardar(finalizada);
+
+        List<Incidencia> resultado = repositorio.listarAbiertas();
+
+        assertEquals(List.of(lista), resultado);
+    }
+    @Test
+    void listarAbiertasDebeDevolverIncidenciasEnDesarrollo() {
+        Incidencia enDesarrollo = crearIncidenciaEnDesarrollo();
+        Incidencia finalizada = crearIncidenciaFinalizada();
+        repositorio.guardar(enDesarrollo);
+        repositorio.guardar(finalizada);
+
+        List<Incidencia> resultado = repositorio.listarAbiertas();
+
+        assertEquals(List.of(enDesarrollo), resultado);
+    }
+    @Test
+    void listarAbiertasDebeDevolverIncidenciasEnValidacion() {
+        Incidencia enValidacion = crearIncidenciaEnValidacion();
+        Incidencia finalizada = crearIncidenciaFinalizada();
+        repositorio.guardar(enValidacion);
+        repositorio.guardar(finalizada);
+
+        List<Incidencia> resultado = repositorio.listarAbiertas();
+
+        assertEquals(List.of(enValidacion), resultado);
+    }
+    @Test
+    void listarAbiertasDebeExcluirIncidenciasFinalizadas() {
+        Incidencia registrada = crearIncidenciaNormal();
+        Incidencia finalizada = crearIncidenciaFinalizada();
+        repositorio.guardar(registrada);
+        repositorio.guardar(finalizada);
+
+        List<Incidencia> resultado = repositorio.listarAbiertas();
+
+        assertEquals(List.of(registrada), resultado);
+    }
+    @Test
+    void listarAbiertasDebeDevolverListaVaciaCuandoTodasEstanFinalizadas() {
+        repositorio.guardar(crearIncidenciaFinalizada());
+        repositorio.guardar(crearIncidenciaFinalizada());
+
+        List<Incidencia> resultado = repositorio.listarAbiertas();
+
+        assertTrue(resultado.isEmpty());
+    }
+    @Test
+    void listarFinalizadasDebeDevolverSolamenteIncidenciasFinalizadas() {
+        Incidencia registrada = crearIncidenciaNormal();
+        Incidencia finalizada = crearIncidenciaFinalizada();
+        repositorio.guardar(registrada);
+        repositorio.guardar(finalizada);
+
+        List<Incidencia> resultado = repositorio.listarFinalizadas();
+
+        assertEquals(List.of(finalizada), resultado);
+    }
+    @Test
+    void listarFinalizadasDebeDevolverListaVaciaCuandoNoHayFinalizadas() {
+        repositorio.guardar(crearIncidenciaNormal());
+        repositorio.guardar(crearIncidenciaEnValidacion());
+
+        List<Incidencia> resultado = repositorio.listarFinalizadas();
+
+        assertTrue(resultado.isEmpty());
+    }
+    @Test
+    void listarAbiertasYFinalizadasDebenConservarOrdenDeInsercion() {
+        Incidencia registrada = crearIncidenciaNormal();
+        Incidencia finalizadaPrimera = crearIncidenciaFinalizada();
+        Incidencia lista = crearIncidenciaLista();
+        Incidencia finalizadaSegunda = crearIncidenciaFinalizada();
+        Incidencia enDesarrollo = crearIncidenciaEnDesarrollo();
+        repositorio.guardar(registrada);
+        repositorio.guardar(finalizadaPrimera);
+        repositorio.guardar(lista);
+        repositorio.guardar(finalizadaSegunda);
+        repositorio.guardar(enDesarrollo);
+
+        assertEquals(List.of(registrada, lista, enDesarrollo),
+                repositorio.listarAbiertas());
+        assertEquals(List.of(finalizadaPrimera, finalizadaSegunda),
+                repositorio.listarFinalizadas());
+    }
+    @Test
+    void listasDeAbiertasYFinalizadasNoDebenModificarElRepositorio() {
+        Incidencia abierta = crearIncidenciaNormal();
+        Incidencia finalizada = crearIncidenciaFinalizada();
+        repositorio.guardar(abierta);
+        repositorio.guardar(finalizada);
+        List<Incidencia> abiertas = repositorio.listarAbiertas();
+        List<Incidencia> finalizadas = repositorio.listarFinalizadas();
+
+        assertThrows(UnsupportedOperationException.class, abiertas::clear);
+        assertThrows(UnsupportedOperationException.class, finalizadas::clear);
+
+        assertEquals(List.of(abierta), repositorio.listarAbiertas());
+        assertEquals(List.of(finalizada), repositorio.listarFinalizadas());
+    }
+    @Test
     void debeRechazarEstadoNulo() {
         assertThrows(IllegalArgumentException.class,
                 () -> repositorio.filtrarPorEstado(null));
@@ -200,5 +317,28 @@ class RepositorioIncidenciasMemoriaTest {
                 Impacto.ALTO,
                 Urgencia.ALTA
         );
+    }
+    private Incidencia crearIncidenciaLista() {
+        Incidencia incidencia = crearIncidenciaAlta();
+        incidencia.avanzarA(EstadoIncidencia.LISTA);
+        return incidencia;
+    }
+
+    private Incidencia crearIncidenciaEnDesarrollo() {
+        Incidencia incidencia = crearIncidenciaLista();
+        incidencia.avanzarA(EstadoIncidencia.EN_DESARROLLO);
+        return incidencia;
+    }
+
+    private Incidencia crearIncidenciaEnValidacion() {
+        Incidencia incidencia = crearIncidenciaEnDesarrollo();
+        incidencia.avanzarA(EstadoIncidencia.EN_VALIDACION);
+        return incidencia;
+    }
+
+    private Incidencia crearIncidenciaFinalizada() {
+        Incidencia incidencia = crearIncidenciaEnValidacion();
+        incidencia.finalizar("Se aplico la solucion correspondiente.");
+        return incidencia;
     }
 }
