@@ -1,5 +1,6 @@
 package com.helpdeskflow;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -15,6 +16,7 @@ public class Incidencia {
     private final Urgencia urgencia;
     private EstadoIncidencia estado;
     private final LocalDateTime fechaCreacion;
+    private final Clock reloj;
 
     private LocalDateTime fechaCierre;
     private String descripcionSolucion;
@@ -26,11 +28,24 @@ public class Incidencia {
             Impacto impacto,
             Urgencia urgencia) {
 
+        this(titulo, descripcion, categoria, impacto, urgencia,
+                Clock.systemDefaultZone());
+    }
+
+    Incidencia(
+            String titulo,
+            String descripcion,
+            String categoria,
+            Impacto impacto,
+            Urgencia urgencia,
+            Clock reloj) {
+
         validarTitulo(titulo);
         validarDescripcion(descripcion);
         validarCategoria(categoria);
         validarImpacto(impacto);
         validarUrgencia(urgencia);
+        validarReloj(reloj);
 
         this.id = UUID.randomUUID();
         this.titulo = titulo.trim();
@@ -40,7 +55,8 @@ public class Incidencia {
         this.urgencia = urgencia;
         this.prioridad = CalculadorPrioridad.calcular(impacto, urgencia);
         this.estado = EstadoIncidencia.REGISTRADA;
-        this.fechaCreacion = LocalDateTime.now();
+        this.reloj = reloj;
+        this.fechaCreacion = LocalDateTime.now(reloj);
     }
 
     private static void validarTitulo(String titulo) {
@@ -79,6 +95,14 @@ public class Incidencia {
         if (urgencia == null) {
             throw new IllegalArgumentException(
                     "La urgencia es obligatoria."
+            );
+        }
+    }
+
+    private static void validarReloj(Clock reloj) {
+        if (reloj == null) {
+            throw new IllegalArgumentException(
+                    "El reloj es obligatorio."
             );
         }
     }
@@ -134,7 +158,7 @@ public class Incidencia {
 
     public Prioridad getPrioridad() {
         return prioridad;
-}
+    }
 
     public void avanzarA(EstadoIncidencia nuevoEstado) {
         validarNuevoEstado(nuevoEstado);
@@ -155,7 +179,7 @@ public class Incidencia {
 
         this.estado = EstadoIncidencia.FINALIZADA;
         this.descripcionSolucion = descripcionSolucion.trim();
-        this.fechaCierre = LocalDateTime.now();
+        this.fechaCierre = LocalDateTime.now(reloj);
     }
 
     private void validarNuevoEstado(EstadoIncidencia nuevoEstado) {
