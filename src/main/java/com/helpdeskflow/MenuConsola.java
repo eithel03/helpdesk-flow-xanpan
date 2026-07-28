@@ -13,6 +13,7 @@ public class MenuConsola {
         private final BufferedReader entrada;
         private final PrintStream salida;
         private final ControladorConsola controlador;
+        private final FormateadorIncidenciasConsola formateadorIncidencias;
         private boolean ejecutando;
 
         public MenuConsola(
@@ -47,6 +48,7 @@ public class MenuConsola {
                 this.entrada = new BufferedReader(entrada);
                 this.salida = salida;
                 this.controlador = controlador;
+                this.formateadorIncidencias = new FormateadorIncidenciasConsola();
 
         }
 
@@ -141,7 +143,7 @@ public class MenuConsola {
                 salida.println();
                 salida.println("LISTADO DE INCIDENCIAS");
 
-                controlador.mostrarIncidencias(
+                formateadorIncidencias.mostrarIncidencias(
                                 controlador.listarTodas(),
                                 salida);
         }
@@ -178,7 +180,7 @@ public class MenuConsola {
 
                 controlador.buscarPorIdentificador(identificador)
                                 .ifPresentOrElse(
-                                                incidencia -> controlador.mostrarIncidencia(
+                                                incidencia -> formateadorIncidencias.mostrarIncidencia(
                                                                 incidencia,
                                                                 salida),
                                                 () -> salida.println(
@@ -197,7 +199,7 @@ public class MenuConsola {
                 salida.print("Estado: ");
                 String estado = leerLinea();
 
-                controlador.mostrarIncidencias(
+                formateadorIncidencias.mostrarIncidencias(
                                 controlador.filtrarPorEstado(estado),
                                 salida);
         }
@@ -212,7 +214,7 @@ public class MenuConsola {
                 salida.print("Prioridad: ");
                 String prioridad = leerLinea();
 
-                controlador.mostrarIncidencias(
+                formateadorIncidencias.mostrarIncidencias(
                                 controlador.filtrarPorPrioridad(prioridad),
                                 salida);
         }
@@ -221,7 +223,7 @@ public class MenuConsola {
                 salida.println();
                 salida.println("INCIDENCIAS ABIERTAS");
 
-                controlador.mostrarIncidencias(
+                formateadorIncidencias.mostrarIncidencias(
                                 controlador.listarAbiertas(),
                                 salida);
         }
@@ -230,7 +232,7 @@ public class MenuConsola {
                 salida.println();
                 salida.println("INCIDENCIAS FINALIZADAS");
 
-                controlador.mostrarIncidencias(
+                formateadorIncidencias.mostrarIncidencias(
                                 controlador.listarFinalizadas(),
                                 salida);
         }
@@ -330,7 +332,7 @@ public class MenuConsola {
                 salida.println();
                 salida.println("INCIDENCIAS EXPEDITE");
 
-                controlador.mostrarIncidencias(
+                formateadorIncidencias.mostrarIncidencias(
                                 controlador.listarExpedite(),
                                 salida);
         }
