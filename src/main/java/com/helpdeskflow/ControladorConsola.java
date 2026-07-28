@@ -13,6 +13,7 @@ public class ControladorConsola {
     private final RepositorioIncidencias repositorio;
     private final ServicioExpedite servicioExpedite;
     private final ServicioMetricasIncidencias servicioMetricas;
+    private final FormateadorIncidenciasConsola formateadorIncidencias;
 
     public ControladorConsola(
             RepositorioIncidencias repositorio) {
@@ -25,6 +26,7 @@ public class ControladorConsola {
         this.repositorio = repositorio;
         this.servicioExpedite = new ServicioExpedite(repositorio);
         this.servicioMetricas = new ServicioMetricasIncidencias(repositorio);
+        this.formateadorIncidencias = new FormateadorIncidenciasConsola();
     }
 
     public Incidencia registrarIncidencia(
@@ -53,24 +55,9 @@ public class ControladorConsola {
             List<Incidencia> incidencias,
             PrintStream salida) {
 
-        if (incidencias == null) {
-            throw new IllegalArgumentException(
-                    "La lista de incidencias es obligatoria.");
-        }
-
-        if (salida == null) {
-            throw new IllegalArgumentException(
-                    "La salida es obligatoria.");
-        }
-
-        if (incidencias.isEmpty()) {
-            salida.println("No existen incidencias para mostrar.");
-            return;
-        }
-
-        for (Incidencia incidencia : incidencias) {
-            mostrarIncidencia(incidencia, salida);
-        }
+        formateadorIncidencias.mostrarIncidencias(
+                incidencias,
+                salida);
     }
 
     public List<Incidencia> listarTodas() {
@@ -88,7 +75,7 @@ public class ControladorConsola {
                     valor.trim().toUpperCase());
         } catch (IllegalArgumentException excepcion) {
             throw new IllegalArgumentException(
-                    "Impacto inválido. Use BAJO, MEDIO o ALTO.");
+                    "Impacto inv\u00e1lido. Use BAJO, MEDIO o ALTO.");
         }
     }
 
@@ -103,28 +90,8 @@ public class ControladorConsola {
                     valor.trim().toUpperCase());
         } catch (IllegalArgumentException excepcion) {
             throw new IllegalArgumentException(
-                    "Urgencia inválida. Use BAJA, MEDIA o ALTA.");
+                    "Urgencia inv\u00e1lida. Use BAJA, MEDIA o ALTA.");
         }
-    }
-
-    private void imprimirIncidencia(
-            Incidencia incidencia,
-            PrintStream salida) {
-
-        salida.println("----------------------------------------");
-        salida.println("ID: " + incidencia.getId());
-        salida.println("Título: " + incidencia.getTitulo());
-        salida.println("Categoría: " + incidencia.getCategoria());
-        salida.println("Impacto: " + incidencia.getImpacto());
-        salida.println("Urgencia: " + incidencia.getUrgencia());
-        salida.println("Prioridad: " + incidencia.getPrioridad());
-        salida.println("Estado: " + incidencia.getEstado());
-        salida.println(
-                "EXPEDITE: "
-                        + (incidencia.esExpedite() ? "Sí" : "No"));
-        salida.println(
-                "Fecha de creación: "
-                        + incidencia.getFechaCreacion());
     }
 
     public Optional<Incidencia> buscarPorIdentificador(String identificador) {
@@ -138,7 +105,7 @@ public class ControladorConsola {
             return repositorio.buscarPorId(id);
         } catch (IllegalArgumentException excepcion) {
             throw new IllegalArgumentException(
-                    "El identificador ingresado no tiene un formato válido.");
+                    "El identificador ingresado no tiene un formato v\u00e1lido.");
         }
     }
 
@@ -156,7 +123,7 @@ public class ControladorConsola {
 
         } catch (IllegalArgumentException excepcion) {
             throw new IllegalArgumentException(
-                    "Estado inválido. Use REGISTRADA, LISTA, "
+                    "Estado inv\u00e1lido. Use REGISTRADA, LISTA, "
                             + "EN_DESARROLLO, EN_VALIDACION o FINALIZADA.");
         }
     }
@@ -177,7 +144,7 @@ public class ControladorConsola {
 
         } catch (IllegalArgumentException excepcion) {
             throw new IllegalArgumentException(
-                    "Prioridad inválida. Use NORMAL, ALTA o CRITICA.");
+                    "Prioridad inv\u00e1lida. Use NORMAL, ALTA o CRITICA.");
         }
     }
 
@@ -193,17 +160,9 @@ public class ControladorConsola {
             Incidencia incidencia,
             PrintStream salida) {
 
-        if (incidencia == null) {
-            throw new IllegalArgumentException(
-                    "La incidencia es obligatoria.");
-        }
-
-        if (salida == null) {
-            throw new IllegalArgumentException(
-                    "La salida es obligatoria.");
-        }
-
-        imprimirIncidencia(incidencia, salida);
+        formateadorIncidencias.mostrarIncidencia(
+                incidencia,
+                salida);
     }
 
     public Incidencia avanzarEstado(
@@ -253,13 +212,13 @@ public class ControladorConsola {
                     identificador.trim());
         } catch (IllegalArgumentException excepcion) {
             throw new IllegalArgumentException(
-                    "El identificador ingresado no tiene un formato válido.");
+                    "El identificador ingresado no tiene un formato v\u00e1lido.");
         }
 
         return repositorio.buscarPorId(id)
                 .orElseThrow(
                         () -> new IllegalArgumentException(
-                                "No se encontró una incidencia "
+                                "No se encontr\u00f3 una incidencia "
                                         + "con ese identificador."));
     }
 
@@ -278,7 +237,7 @@ public class ControladorConsola {
                     estadoTexto.trim().toUpperCase());
         } catch (IllegalArgumentException excepcion) {
             throw new IllegalArgumentException(
-                    "Estado inválido. Use LISTA, EN_DESARROLLO "
+                    "Estado inv\u00e1lido. Use LISTA, EN_DESARROLLO "
                             + "o EN_VALIDACION.");
         }
     }
