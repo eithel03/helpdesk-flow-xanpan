@@ -1,5 +1,11 @@
 # HelpDesk Flow
 
+<!-- local-development:start -->
+## Desarrollo local
+
+Consulta [RUNNING.md](RUNNING.md) para ubicar cada componente, abrirlo en su IDE, compilarlo y conocer las comprobaciones realizadas y los requisitos pendientes.
+<!-- local-development:end -->
+
 Sistema de gestión de incidencias técnicas desarrollado como parte de la tarea programativa del curso **ITI-822 Metodologías Ágiles de Desarrollo de Software**.
 
 ## Descripción del sistema
