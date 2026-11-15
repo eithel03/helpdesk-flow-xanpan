@@ -1,5 +1,11 @@
 # HelpDesk Flow
 
+<!-- local-development:start -->
+## Desarrollo local
+
+Consulta [RUNNING.md](RUNNING.md) para ubicar cada componente, abrirlo en su IDE, compilarlo y conocer las comprobaciones realizadas y los requisitos pendientes.
+<!-- local-development:end -->
+
 Sistema de gestión de incidencias técnicas desarrollado como parte de la tarea programativa del curso **ITI-822 Metodologías Ágiles de Desarrollo de Software**.
 
 ## Descripción del sistema
@@ -421,3 +427,25 @@ HelpDesk Flow cuenta con:
 - Gestión del trabajo mediante Xanpan.
 
 El sistema se encuentra funcionalmente implementado y preparado para su validación y demostración técnica.
+
+<!-- build-repairs-20261115:start -->
+## Reparación y comprobación — 2026-11-15
+
+- Se documentaron los comandos de compilación y comprobación con Maven/JDK 24 y se conservaron los cambios previos de README y exclusiones.
+
+Comprobado:
+
+- Maven package terminó correctamente para `pom.xml`.
+- Maven: [INFO] Tests run: 142, Failures: 0, Errors: 0, Skipped: 0
+
+Comandos:
+
+```powershell
+mvn -f "pom.xml" package
+```
+
+Alcance pendiente:
+
+- Compilar y ejecutar la suite disponible no demuestra todos los flujos gráficos, de datos o de instalación.
+
+<!-- build-repairs-20261115:end -->
